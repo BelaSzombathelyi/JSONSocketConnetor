@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Socket Connector</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>JSON Socket Connector</h1>
+            <div class="connection-controls">
+                <div class="input-group">
+                    <label for="hostname">Host:</label>
+                    <input type="text" id="hostname" value="localhost" placeholder="localhost">
+                </div>
+                <div class="input-group">
+                    <label for="port">Port:</label>
+                    <input type="number" id="port" value="60200" min="1" max="65535" placeholder="60200">
+                </div>
+                <button id="reconnect-btn" class="btn btn-primary">Reconnect</button>
+                <div class="connection-status" id="connection-status">
+                    <span class="status-indicator" id="status-indicator"></span>
+                    <span id="status-text">Disconnected</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="left-panel">
+                <h3>Send JSON Message</h3>
+                <textarea id="message-input" placeholder='Enter JSON message here, e.g.:
+{
+  "type": "greeting",
+  "message": "Hello World!"
+}'></textarea>
+                <div class="send-controls">
+                    <button id="send-btn" class="btn btn-success" disabled>Send Message</button>
+                    <button id="clear-input-btn" class="btn btn-secondary">Clear</button>
+                </div>
+                <div class="validation-status" id="validation-status"></div>
+            </div>
+
+            <div class="right-panel">
+                <h3>Received Messages</h3>
+                <div id="messages-display" class="messages-display"></div>
+                <div class="message-controls">
+                    <button id="clear-messages-btn" class="btn btn-secondary">Clear Messages</button>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="auto-scroll-checkbox" checked>
+                        Auto-scroll
+                    </label>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
