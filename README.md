@@ -17,3 +17,7 @@ Egy elölnézete:
 A Send gomb hatására elküldi a bal oldalon látható JSON-t (ha valid, ha nem akkor hibaüzenet)
 
 Legyen mindkét oldalon JSON syntax hightlight.
+
+
+Ha nem sikerült a kapcsolatot létrehozni akkor pirossal írja ki a hibát valahogy így:
+<img width="368" height="47" alt="image" src="https://github.com/user-attachments/assets/f165bf17-355c-408d-8290-9c82124c8b27" />
