@@ -1,8 +1,0 @@
-com/jsonconnector/SocketClient.class
-com/jsonconnector/JsonFormatter.class
-com/jsonconnector/JsonValidator.class
-com/jsonconnector/FavoritesModal.class
-com/jsonconnector/CommandManager.class
-com/jsonconnector/JsonFormatter$1.class
-com/jsonconnector/JSONSocketConnectorApp.class
-com/jsonconnector/JSONSocketConnectorApp$1.class
