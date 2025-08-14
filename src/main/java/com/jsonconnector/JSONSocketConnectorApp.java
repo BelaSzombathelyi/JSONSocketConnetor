@@ -50,6 +50,21 @@ public class JSONSocketConnectorApp extends Application {
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(500);
         
+        // Add resize listeners to improve performance and prevent flickering
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> {
+                // Force layout update to prevent rendering issues
+                root.requestLayout();
+            });
+        });
+        
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> {
+                // Force layout update to prevent rendering issues
+                root.requestLayout();
+            });
+        });
+        
         // Initialize socket client and command manager
         socketClient = new SocketClient(this::onMessageReceived, this::onConnectionStatusChanged);
         commandManager = new CommandManager();
@@ -66,7 +81,7 @@ public class JSONSocketConnectorApp extends Application {
         hostnameField.setPrefWidth(150);
         
         portField = new TextField("60200");
-        portField.setPrefWidth(80);
+        portField.setPrefWidth(150); // Make same width as hostname field
         portField.textProperty().addListener((obs, oldText, newText) -> {
             if (!newText.matches("\\d*")) {
                 portField.setText(oldText);
@@ -118,13 +133,13 @@ public class JSONSocketConnectorApp extends Application {
         VBox root = new VBox(10);
         root.setPadding(new Insets(10));
         
-        // Top panel with connection controls
+        // Top panel with connection controls and status
         HBox topPanel = createTopPanel();
         
         // Middle panel with text areas
         HBox middlePanel = createMiddlePanel();
         
-        // Bottom panel with status
+        // Bottom panel with action buttons
         HBox bottomPanel = createBottomPanel();
         
         root.getChildren().addAll(topPanel, middlePanel, bottomPanel);
@@ -137,11 +152,22 @@ public class JSONSocketConnectorApp extends Application {
         HBox topPanel = new HBox(10);
         topPanel.setAlignment(Pos.CENTER_LEFT);
         
-        topPanel.getChildren().addAll(
+        // Left side with connection controls
+        HBox leftControls = new HBox(10);
+        leftControls.setAlignment(Pos.CENTER_LEFT);
+        leftControls.getChildren().addAll(
             new Label("Hostname:"), hostnameField,
             new Label("Port:"), portField,
             reconnectButton
         );
+        
+        // Right side with status
+        HBox rightControls = new HBox(10);
+        rightControls.setAlignment(Pos.CENTER_RIGHT);
+        rightControls.getChildren().addAll(new Label("Status:"), statusLabel);
+        
+        topPanel.getChildren().addAll(leftControls, rightControls);
+        HBox.setHgrow(leftControls, Priority.ALWAYS);
         
         return topPanel;
     }
@@ -165,9 +191,8 @@ public class JSONSocketConnectorApp extends Application {
     private VBox createSendPanel() {
         VBox sendPanel = new VBox(5);
         
-        HBox sendHeader = new HBox(10);
-        sendHeader.setAlignment(Pos.CENTER_LEFT);
-        sendHeader.getChildren().addAll(new Label("Send JSON:"), favoritesButton, sendButton);
+        // Just the label header, no buttons
+        sendPanel.getChildren().add(new Label("Send JSON:"));
         
         SwingNode sendSwingNode = new SwingNode();
         SwingUtilities.invokeLater(() -> {
@@ -175,7 +200,10 @@ public class JSONSocketConnectorApp extends Application {
             sendSwingNode.setContent(sendScrollPane);
         });
         
-        sendPanel.getChildren().addAll(sendHeader, sendSwingNode);
+        // Add resize handling to prevent flickering and improve performance
+        sendSwingNode.setOnMouseEntered(e -> sendSwingNode.requestFocus());
+        
+        sendPanel.getChildren().add(sendSwingNode);
         VBox.setVgrow(sendSwingNode, Priority.ALWAYS);
         
         return sendPanel;
@@ -192,6 +220,9 @@ public class JSONSocketConnectorApp extends Application {
             receiveSwingNode.setContent(receiveScrollPane);
         });
         
+        // Add resize handling to prevent flickering and improve performance
+        receiveSwingNode.setOnMouseEntered(e -> receiveSwingNode.requestFocus());
+        
         receivePanel.getChildren().add(receiveSwingNode);
         VBox.setVgrow(receiveSwingNode, Priority.ALWAYS);
         
@@ -199,10 +230,22 @@ public class JSONSocketConnectorApp extends Application {
     }
     
     private HBox createBottomPanel() {
-        HBox bottomPanel = new HBox();
-        bottomPanel.setAlignment(Pos.CENTER_LEFT);
-        bottomPanel.getChildren().add(new Label("Status: "));
-        bottomPanel.getChildren().add(statusLabel);
+        // This is now the bottom action panel with Star and Send buttons
+        HBox bottomPanel = new HBox(10);
+        bottomPanel.setAlignment(Pos.CENTER);
+        
+        // Left side with favorites button
+        HBox leftActions = new HBox();
+        leftActions.setAlignment(Pos.CENTER_LEFT);
+        leftActions.getChildren().add(favoritesButton);
+        
+        // Right side with send button
+        HBox rightActions = new HBox();
+        rightActions.setAlignment(Pos.CENTER_RIGHT);
+        rightActions.getChildren().add(sendButton);
+        
+        bottomPanel.getChildren().addAll(leftActions, rightActions);
+        HBox.setHgrow(leftActions, Priority.ALWAYS);
         
         return bottomPanel;
     }
