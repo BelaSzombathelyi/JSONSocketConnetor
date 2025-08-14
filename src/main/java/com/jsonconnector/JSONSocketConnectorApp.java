@@ -218,8 +218,16 @@ public class JSONSocketConnectorApp extends Application {
         
         try {
             int port = Integer.parseInt(portText);
+            
+            // Disable reconnect button and show reconnecting status
+            reconnectButton.setDisable(true);
+            statusLabel.setText("Reconnecting...");
+            statusLabel.setTextFill(Color.ORANGE);
+            
             socketClient.connect(hostname, port);
         } catch (NumberFormatException e) {
+            // Re-enable button on error
+            reconnectButton.setDisable(false);
             showError("Invalid port number");
         }
     }
@@ -320,6 +328,9 @@ public class JSONSocketConnectorApp extends Application {
     
     private void onConnectionStatusChanged(boolean connected, String error) {
         Platform.runLater(() -> {
+            // Always re-enable the reconnect button
+            reconnectButton.setDisable(false);
+            
             if (connected) {
                 statusLabel.setText("Connected");
                 statusLabel.setTextFill(Color.GREEN);
